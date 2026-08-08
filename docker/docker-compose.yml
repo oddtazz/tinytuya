@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  tuya-influxdb:
+    build: .
+    container_name: tuya-influxdb
+    restart: unless-stopped
+    volumes:
+      - ./config.yaml:/app/config.yaml
+    environment:
+      # Tuya cloud API (set at stack deploy time; falls back to config.yaml)
+      TUYA_API_KEY: ${TUYA_API_KEY:-}
+      TUYA_API_SECRET: ${TUYA_API_SECRET:-}
+      TUYA_REGION: ${TUYA_REGION:-in}
+      TUYA_DEVICE_ID: ${TUYA_DEVICE_ID:-d7315f4ed753b4e560sn44}
+      # InfluxDB (optional; config.yaml holds the defaults)
+      INFLUX_TOKEN: ${INFLUX_TOKEN:-}
+      POLL_INTERVAL: ${POLL_INTERVAL:-300}
+    networks:
+      - tuya-network
+
+networks:
+  tuya-network:
+    driver: bridge

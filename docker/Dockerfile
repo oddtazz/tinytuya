@@ -1,0 +1,14 @@
+FROM python:3.11-alpine
+
+WORKDIR /app
+
+# Install required packages
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application code and config
+COPY tuyainfluxdbv2.py .
+COPY config.yaml .
+
+# Run the script
+CMD ["python", "tuyainfluxdbv2.py"]
