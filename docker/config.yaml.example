@@ -1,19 +1,28 @@
-# Example config — copy to config.yaml and fill in real values (config.yaml is gitignored).
-# Precedence: environment variables (TUYA_*, INFLUX_*) override these values.
+# Logging configuration
 logging:
   level: "INFO"  # DEBUG for troubleshooting
 
+# InfluxDB configuration
 influxdb:
-  token: "<influxdb v2 write token for the air_quality bucket>"
+  token: "<INFLUX_TOKEN_AIR_QUALITY_WRITE>"
   org: "homelab"
   url: "http://10.100.10.225:8086"
   bucket: "air_quality"
 
+# Tuya device configuration (LAN PRIMARY — data flows device -> LAN -> InfluxDB)
+# Cloud API creds are used ONLY for local_key maintenance (error 914 rotation
+# recovery / first-boot key fetch). Sensor data never transits Tuya's servers.
 tuya:
-  device_id: "<tuya device id>"
-  api_key: "<tuya iot platform access id>"
-  api_secret: "<tuya iot platform access secret>"
+  device_id: "<TUYA_DEVICE_ID>"
+  api_key: "<TUYA_API_KEY>"
+  api_secret: "<TUYA_API_SECRET>"
   region: "in"
+  # --- LAN ---
+  ip_address: "<DEVICE_LAN_IP>"   # pin with a DHCP reservation
+  local_key: "<CURRENT_LOCAL_KEY>" # auto-refreshed from cloud on error 914
+  version: 3.5
 
+# General settings
 general:
-  polling_interval: 300  # seconds; cloud API quota friendly
+  polling_interval: 60  # seconds (LAN — no cloud quota to respect)
+  status_timeout: 6     # seconds; a sleeping battery device times out, which is expected
